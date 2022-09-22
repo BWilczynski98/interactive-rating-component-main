@@ -1,9 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
 import RateCard from "./components/RateCard";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
-import {useTheme} from '@emotion/react'
+import { useTheme } from "@emotion/react";
+import SubmitAlert from "./components/SubmitAlert";
 
 function App() {
+  const [rating, setRating] = useState();
+  const [submitHandle, setSubmitHandle] = useState(false);
+
   const theme = createTheme({
     palette: {
       primary: {
@@ -32,10 +36,21 @@ function App() {
     fontWeight: "400",
   };
 
+  theme.typography.body2 = {
+    color: theme.palette.primary.main,
+    fontSize: "0.938rem",
+    fontFamily: "Overpass, sans-serif",
+    fontWeight: "400",
+  };
+
   return (
     <>
       <ThemeProvider theme={theme}>
-        <RateCard />
+        {!submitHandle ? (
+          <RateCard setRating={setRating} setSubmitHandle={setSubmitHandle} />
+        ) : (
+          <SubmitAlert rating={rating} />
+        )}
       </ThemeProvider>
     </>
   );

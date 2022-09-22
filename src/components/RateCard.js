@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { styled } from "@mui/material";
 import {
   Card,
@@ -20,21 +20,20 @@ export const StyledRateCard = styled(Card)(({ theme }) => ({
   display: "flex",
   flexDirection: "column",
   justifyContent: "space-around",
-  padding: '0.625rem'
+  padding: "0.625rem",
 }));
 
 export const SubmitButton = styled(Button)(({ theme }) => ({
   fontFamily: "Overpass, sans-serif;",
   color: theme.palette.primary.white,
   width: "90%",
-  borderRadius: '1.563rem'
-}));
+  borderRadius: "1.563rem",
 
-export const RatingButton = styled(Button)(({ theme }) => ({
-  backgroundColor: theme.palette.primary.mediumDarkBlue,
-  minWidth: "45px",
-  lineHeight: "30px",
-  borderRadius: "100%",
+  "&:hover": {
+    cursor: "pointer",
+    backgroundColor: theme.palette.primary.white,
+    color: theme.palette.primary.main,
+  },
 }));
 
 export const StarAvatar = styled(Avatar)(({ theme }) => ({
@@ -44,10 +43,36 @@ export const StarAvatar = styled(Avatar)(({ theme }) => ({
 export const RatingGroup = styled(Box)(({ theme }) => ({
   display: "flex",
   gap: "25px",
-  width: '100%'
+  width: "100%",
 }));
 
-const RateCard = () => {
+const RateCard = ({setRating, setSubmitHandle}) => {
+  const [active, setActive] = useState();
+  const [hoverElement, setHoverElement] = useState();
+  const ratings = [1, 2, 3, 4, 5];
+
+  const RatingButton = styled(Button)(({ theme, index }) => ({
+    backgroundColor:
+      index === active - 1 || index === hoverElement - 1
+        ? theme.palette.primary.mediumGrey
+        : index === active || index === hoverElement
+        ? theme.palette.primary.main
+        : theme.palette.primary.mediumDarkBlue,
+
+    minWidth: "45px",
+    lineHeight: "30px",
+    borderRadius: "100%",
+    color:
+      index === active - 1 || index === active || index === hoverElement - 1 || index === hoverElement
+        ? theme.palette.primary.white
+        : theme.palette.primary.mediumGrey,
+    '&:hover':{
+      color: theme.palette.primary.white,
+      backgroundColor: theme.palette.primary.main,
+    }
+
+  }));
+
   return (
     <>
       <StyledRateCard>
@@ -59,7 +84,13 @@ const RateCard = () => {
           }
         />
         <CardContent>
-          <Box sx={{display: 'flex', flexDirection: 'column', rowGap: '0.625rem'}}>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              rowGap: "0.625rem",
+            }}
+          >
             <Typography variant="h5">How did we do?</Typography>
             <Typography variant="body1">
               Please let us know how we did with your support request. All
@@ -69,15 +100,26 @@ const RateCard = () => {
         </CardContent>
         <CardActions>
           <RatingGroup>
-            <RatingButton>1</RatingButton>
-            <RatingButton>2</RatingButton>
-            <RatingButton>3</RatingButton>
-            <RatingButton>4</RatingButton>
-            <RatingButton>5</RatingButton>
+            {ratings.map((rating, index) => (
+              <RatingButton
+                key={rating}
+                index={index}
+                onClick={() => 
+                  {
+                    setActive(index);
+                    setRating(index + 1)
+                  }
+                }
+                onMouseOver={() => setHoverElement(index)}
+                onMouseOut={() => setHoverElement('')}
+              >
+                {rating}
+              </RatingButton>
+            ))}
           </RatingGroup>
         </CardActions>
-        <Box sx={{display: 'flex', justifyContent: 'center'}}>
-          <SubmitButton variant="contained">Submit</SubmitButton>
+        <Box sx={{ display: "flex", justifyContent: "center" }}>
+          <SubmitButton variant="contained" onClick={() => setSubmitHandle(true)}>Submit</SubmitButton>
         </Box>
       </StyledRateCard>
       ;
